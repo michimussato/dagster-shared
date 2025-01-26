@@ -106,12 +106,14 @@ def iterate_fds(
     return ret
 
 
-def iterate_fds_original(handles, functions):
+def iterate_fds_original(handles, functions, sys_output: bool = True):
     methods = dict(zip(handles, functions))
     while methods:
         for handle in select.select(methods.keys(), tuple(), tuple())[0]:
             line = handle.readline()
             if line:
                 methods[handle](line[:-1].decode("utf-8"))
+                if sys_output:
+                    sys.stdout.write(line[:-1].decode("utf-8"))
             else:
                 methods.pop(handle)
