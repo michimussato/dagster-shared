@@ -2,6 +2,11 @@ import select
 import typing
 
 
+__all__ = [
+    "iterate_fds",
+]
+
+
 def iterate_fds(
         *,
         handles: tuple[
@@ -12,6 +17,7 @@ def iterate_fds(
         functions: tuple[
             callable, callable,
         ],
+        do_print: bool = True,
         live_print=False,
 ) -> dict[str, bytes]:
     """
@@ -79,8 +85,13 @@ def iterate_fds(
             line = handle.readline()
 
             if line:
+                # Todo
+                #  - [ ] what does live_print do?
                 if live_print:
                     function(line.decode("utf-8"))
+
+                if do_print:
+                    print(line.decode("utf-8"))
                 ret[label] += line
 
                 # This is from the reference, but can't
