@@ -17,8 +17,8 @@ def iterate_fds(
         functions: tuple[
             callable, callable,
         ],
-        do_print: bool = True,
-        live_print=False,
+        # do_print: bool = True,
+        # live_print=False,
 ) -> dict[str, bytes]:
     """
     Can be used to live-feed stdout and stderr of a
@@ -85,21 +85,32 @@ def iterate_fds(
             line = handle.readline()
 
             if line:
-                # Todo
-                #  - [ ] what does live_print do?
-                if live_print:
-                    function(line.decode("utf-8"))
-
-                if do_print:
-                    print(line.decode("utf-8"))
-                ret[label] += line
-
-                # This is from the reference, but can't
-                # tell the difference so far other than
-                # not cutting off the last character in
-                # a line without \n
-                # methods[handle](line[:-1].decode("utf-8"))
+                # # Todo
+                # #  - [ ] what does live_print do?
+                # if live_print:
+                #     function(line.decode("utf-8"))
+                #
+                # if do_print:
+                #     print(line.decode("utf-8"))
+                # ret[label] += line
+                #
+                # # This is from the reference, but can't
+                # # tell the difference so far other than
+                # # not cutting off the last character in
+                # # a line without \n
+                methods[handle](line[:-1].decode("utf-8"))
             else:
                 methods.pop(handle)
 
     return ret
+
+
+def iterate_fds_original(handles, functions):
+    methods = dict(zip(handles, functions))
+    while methods:
+        for handle in select.select(methods.keys(), tuple(), tuple())[0]:
+            line = handle.readline()
+            if line:
+                methods[handle](line[:-1])
+            else:
+                methods.pop(handle)
