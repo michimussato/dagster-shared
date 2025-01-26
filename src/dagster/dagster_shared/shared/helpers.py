@@ -112,6 +112,6 @@ def iterate_fds_original(handles, functions):
         for handle in select.select(methods.keys(), tuple(), tuple())[0]:
             line = handle.readline()
             if line:
-                methods[handle](line[:-1])
+                methods[handle](line[:-1].decode("utf-8"))
             else:
                 methods.pop(handle)
