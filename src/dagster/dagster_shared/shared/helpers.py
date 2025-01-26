@@ -4,6 +4,7 @@ import typing
 
 __all__ = [
     "iterate_fds",
+    "iterate_fds_original",
 ]
 
 
